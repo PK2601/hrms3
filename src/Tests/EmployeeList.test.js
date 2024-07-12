@@ -120,7 +120,7 @@ describe.skip('TablesEmp component', () => {
   
     it('renders table columns correctly', () => {
       const columns = screen.getAllByRole('columnheader');
-      expect(columns).toHaveLength(9);
+      expect(columns).toHaveLength(10);
       expect(screen.getByTestId('id')).toBeInTheDocument();
       expect(screen.getByTestId('name')).toBeInTheDocument();
       expect(screen.getByTestId('department')).toBeInTheDocument();
