@@ -27,7 +27,7 @@ const EmployeeAdd = () => {
   };
   const isValidEmail = /\S+@\S+\.\S+/.test(email);
   const isValidPhone = /^\d{10}$/.test(phone);
-  const isValidAddress = /^\S+[A-Za-z0-9 ]+$/.test(address);
+  const isValidAddress = /^[^\s][\s\S]*$/.test(address);
   const isValidDOB = /^\d{4}-\d{2}-\d{2}$/.test(dob);
 
   const isFormValid = () => {
