@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
 
 const columns_dashboard = [
@@ -88,6 +88,27 @@ const data_dashboard = [
   },
 ];
 
-const TablesDashboard = ({datadash = data_dashboard}) => <Table columns={columns_dashboard} dataSource={datadash} />;
+const TablesDashboard = ({datadash = data_dashboard}) => {
+  const [data, setData] = useState(datadash);
+
+  useEffect(() => {
+    fetchLeaves();
+  }, []);
+
+  const fetchLeaves = async () => {
+    try {
+      const response = await fetch('http://localhost:9036/leaves');
+      if (response.ok) {
+        const leaves = await response.json();
+        setData(leaves);
+      } else {
+        console.error('Failed to fetch leaves:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching leaves:', error);
+    }
+  };
+   <Table columns={columns_dashboard} dataSource={data} />;
+};
 
 export default TablesDashboard;

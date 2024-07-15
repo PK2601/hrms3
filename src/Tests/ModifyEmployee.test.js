@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 import EmployeeModify from '../components/Modify-Employee';
@@ -14,28 +14,9 @@ beforeAll(() => {
     };
   });
 
-  export async function fetchData() {
-    try {
-      const response = await fetch('https://my-json-server.typicode.com/pk2601/employee/posts');
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return [];
-    }
-  }
-
 
 describe.skip('ModifyEmp component', () => {
 
-    let mockData = [];
-  
-    beforeAll(async () => {
-      mockData = await fetchData();
-    });
-  
     beforeEach(() => {
       render(<EmployeeModify />);
     });
@@ -62,7 +43,7 @@ describe.skip('ModifyEmp component', () => {
         expect(dialogTitle).not.toBeInTheDocument();
       });
 
-      it('enables Save button on valid form input', async () => {
+      it('displays error messages for invalid form input', async () => {
       
         const modifyButton = screen.getAllByTestId('modifyemployee');
         fireEvent.click(modifyButton[0]);
@@ -70,6 +51,38 @@ describe.skip('ModifyEmp component', () => {
         const dialogTitle = screen.getByTestId('modifyemployeetitle');
         expect(dialogTitle).toBeInTheDocument();
     
+        const saveButton = screen.getByTestId('save');
+        expect(saveButton).toHaveClass('cursor-not-allowed');
+        fireEvent.click(saveButton);
+
+        const errorMessage = screen.getByTestId('errormessage');
+        expect(errorMessage).toBeInTheDocument();
+        expect(errorMessage.textContent).toEqual('Please fill in all asterix fields.');
+      });
+
+      it('enables Save button on valid form input', async () => {
+      
+        const modifyButton = screen.getAllByTestId('modifyemployee');
+        fireEvent.click(modifyButton[0]);
+    
+        const dialogTitle = screen.getByTestId('modifyemployeetitle');
+        expect(dialogTitle).toBeInTheDocument();
+
+        const nameInput = screen.getByTestId('namelabel');
+        userEvent.type(nameInput, 'James');
+
+        const emailInput = screen.getByTestId('emaillabel');
+        userEvent.type(emailInput, 'james@example.com');
+
+        const phoneInput = screen.getByTestId('phonelabel');
+        userEvent.type(phoneInput, '1234567890');
+
+        const addressInput = screen.getByTestId('addresslabel');
+        userEvent.type(addressInput, '123 Main St');
+
+        const dobInput = screen.getByTestId('doblabel');
+        userEvent.type(dobInput, '1990-01-01');
+
         const saveButton = screen.getByTestId('save');
         expect(saveButton).not.toHaveClass('cursor-not-allowed');
       });
@@ -84,12 +97,24 @@ describe.skip('ModifyEmp component', () => {
     
         const nameInput = screen.getByTestId('namelabel');
         userEvent.type(nameInput, '123');
-    
+
+        const emailInput = screen.getByTestId('emaillabel');
+        userEvent.type(emailInput, 'james@example.com');
+
+        const phoneInput = screen.getByTestId('phonelabel');
+        userEvent.type(phoneInput, '1234567890');
+
+        const addressInput = screen.getByTestId('addresslabel');
+        userEvent.type(addressInput, '123 Main St');
+
+        const dobInput = screen.getByTestId('doblabel');
+        userEvent.type(dobInput, '1990-01-01');
+
         const saveButton = screen.getByTestId('save');
         fireEvent.click(saveButton);
-    
+
         expect(saveButton).toHaveClass('cursor-not-allowed');
-    
+
         const errorMessage = screen.getByTestId('errormessage');
         expect(errorMessage).toBeInTheDocument();
         expect(errorMessage.textContent).toEqual('Name should be in text format');
@@ -102,14 +127,29 @@ describe.skip('ModifyEmp component', () => {
         const dialogTitle = screen.getByTestId('modifyemployeetitle');
         expect(dialogTitle).toBeInTheDocument();
     
+        const nameInput = screen.getByTestId('namelabel');
+        userEvent.type(nameInput, 'James');
+
         const managerInput = screen.getByTestId('manageridlabel');
         userEvent.type(managerInput, 'error');
-    
+
+        const emailInput = screen.getByTestId('emaillabel');
+        userEvent.type(emailInput, 'james@example.com');
+
+        const phoneInput = screen.getByTestId('phonelabel');
+        userEvent.type(phoneInput, '1234567890');
+
+        const addressInput = screen.getByTestId('addresslabel');
+        userEvent.type(addressInput, '123 Main St');
+
+        const dobInput = screen.getByTestId('doblabel');
+        userEvent.type(dobInput, '1990-01-01');
+
         const saveButton = screen.getByTestId('save');
         fireEvent.click(saveButton);
-    
+
         expect(saveButton).toHaveClass('cursor-not-allowed');
-    
+
         const errorMessage = screen.getByTestId('errormessage');
         expect(errorMessage).toBeInTheDocument();
         expect(errorMessage.textContent).toEqual('Manager Id should be numeric');
@@ -122,14 +162,26 @@ describe.skip('ModifyEmp component', () => {
         const dialogTitle = screen.getByTestId('modifyemployeetitle');
         expect(dialogTitle).toBeInTheDocument();
     
+        const nameInput = screen.getByTestId('namelabel');
+        userEvent.type(nameInput, 'james');
+
         const emailInput = screen.getByTestId('emaillabel');
         userEvent.type(emailInput, 'jamesexample.com');
-    
+
+        const phoneInput = screen.getByTestId('phonelabel');
+        userEvent.type(phoneInput, '1234567890');
+
+        const addressInput = screen.getByTestId('addresslabel');
+        userEvent.type(addressInput, '123 Main St');
+
+        const dobInput = screen.getByTestId('doblabel');
+        userEvent.type(dobInput, '1990-01-01');
+
         const saveButton = screen.getByTestId('save');
         fireEvent.click(saveButton);
-    
+
         expect(saveButton).toHaveClass('cursor-not-allowed');
-    
+
         const errorMessage = screen.getByTestId('errormessage');
         expect(errorMessage).toBeInTheDocument();
         expect(errorMessage.textContent).toEqual('Email is of wrong type');
@@ -142,14 +194,26 @@ describe.skip('ModifyEmp component', () => {
         const dialogTitle = screen.getByTestId('modifyemployeetitle');
         expect(dialogTitle).toBeInTheDocument();
 
+        const nameInput = screen.getByTestId('namelabel');
+        userEvent.type(nameInput, 'james');
+
+        const emailInput = screen.getByTestId('emaillabel');
+        userEvent.type(emailInput, 'james@example.com');
+
         const phoneInput = screen.getByTestId('phonelabel');
         userEvent.type(phoneInput, '12345670');
 
+        const addressInput = screen.getByTestId('addresslabel');
+        userEvent.type(addressInput, '123 Main St');
+
+        const dobInput = screen.getByTestId('doblabel');
+        userEvent.type(dobInput, '1990-01-01');
+
         const saveButton = screen.getByTestId('save');
         fireEvent.click(saveButton);
-    
+
         expect(saveButton).toHaveClass('cursor-not-allowed');
-    
+
         const errorMessage = screen.getByTestId('errormessage');
         expect(errorMessage).toBeInTheDocument();
         expect(errorMessage.textContent).toEqual('Phone must contain 10 numbers');
@@ -162,14 +226,26 @@ describe.skip('ModifyEmp component', () => {
         const dialogTitle = screen.getByTestId('modifyemployeetitle');
         expect(dialogTitle).toBeInTheDocument();
 
+        const nameInput = screen.getByTestId('namelabel');
+        userEvent.type(nameInput, 'james');
+
+        const emailInput = screen.getByTestId('emaillabel');
+        userEvent.type(emailInput, 'james@example.com');
+
         const phoneInput = screen.getByTestId('phonelabel');
         userEvent.type(phoneInput, '1234567as0');
-    
+
+        const addressInput = screen.getByTestId('addresslabel');
+        userEvent.type(addressInput, '123 Main St');
+
+        const dobInput = screen.getByTestId('doblabel');
+        userEvent.type(dobInput, '1990-01-01');
+
         const saveButton = screen.getByTestId('save');
         fireEvent.click(saveButton);
-    
+
         expect(saveButton).toHaveClass('cursor-not-allowed');
-    
+
         const errorMessage = screen.getByTestId('errormessage');
         expect(errorMessage).toBeInTheDocument();
         expect(errorMessage.textContent).toEqual('Phone must contain 10 numbers');
@@ -182,14 +258,26 @@ describe.skip('ModifyEmp component', () => {
         const dialogTitle = screen.getByTestId('modifyemployeetitle');
         expect(dialogTitle).toBeInTheDocument();
     
+        const nameInput = screen.getByTestId('namelabel');
+        userEvent.type(nameInput, 'james');
+
+        const emailInput = screen.getByTestId('emaillabel');
+        userEvent.type(emailInput, 'james@example.com');
+
+        const phoneInput = screen.getByTestId('phonelabel');
+        userEvent.type(phoneInput, '1234567890');
+
         const addressInput = screen.getByTestId('addresslabel');
         userEvent.type(addressInput, '     123 Main St');
-    
+
+        const dobInput = screen.getByTestId('doblabel');
+        userEvent.type(dobInput, '1990-01-01');
+
         const saveButton = screen.getByTestId('save');
         fireEvent.click(saveButton);
-    
+
         expect(saveButton).toHaveClass('cursor-not-allowed');
-    
+
         const errorMessage = screen.getByTestId('errormessage');
         expect(errorMessage).toBeInTheDocument();
         expect(errorMessage.textContent).toEqual('Address is of wrong type');
@@ -202,14 +290,26 @@ describe.skip('ModifyEmp component', () => {
         const dialogTitle = screen.getByTestId('modifyemployeetitle');
         expect(dialogTitle).toBeInTheDocument();
     
+        const nameInput = screen.getByTestId('namelabel');
+        userEvent.type(nameInput, 'james');
+
+        const emailInput = screen.getByTestId('emaillabel');
+        userEvent.type(emailInput, 'james@example.com');
+
+        const phoneInput = screen.getByTestId('phonelabel');
+        userEvent.type(phoneInput, '1234567890');
+
+        const addressInput = screen.getByTestId('addresslabel');
+        userEvent.type(addressInput, '123 Main St');
+
         const dobInput = screen.getByTestId('doblabel');
         userEvent.type(dobInput, '19901-01');
-    
+
         const saveButton = screen.getByTestId('save');
         fireEvent.click(saveButton);
-    
+
         expect(saveButton).toHaveClass('cursor-not-allowed');
-    
+
         const errorMessage = screen.getByTestId('errormessage');
         expect(errorMessage).toBeInTheDocument();
         expect(errorMessage.textContent).toEqual('Date of Birth should be of format YYYY-MM-DD');

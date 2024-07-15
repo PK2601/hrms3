@@ -14,11 +14,11 @@ const EmployeeAdd = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const departments = [
-    { id: 101, name: 'Human Resources' },
-    { id: 102, name: 'Information Technology' },
-    { id: 103, name: 'Finance' },
-    { id: 104, name: 'Sales' },
-    { id: 105, name: 'Marketing' },
+    { id: 1, name: 'Human Resources' },
+    { id: 2, name: 'Information Technology' },
+    { id: 3, name: 'Finance' },
+    { id: 4, name: 'Sales' },
+    { id: 5, name: 'Marketing' },
   ];
   const isValidName = /^\S+[A-Za-z ]+$/.test(name);
   //const isValidDepartmentId = /^\d+$/.test(departmentId);
@@ -56,7 +56,7 @@ const EmployeeAdd = () => {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!isFilled()) {
       setErrorMessage('Please fill in all asterix fields.');
       return;
@@ -91,26 +91,66 @@ const EmployeeAdd = () => {
       return;
     }
 
+    const departmentIdInt = parseInt(departmentId);
+    const managerIdInt = managerId ? parseInt(managerId) : null;
+
+    // const employeeData = {
+    //   name,
+    //   departmentId,
+    //   managerId,
+    //   email,
+    //   phone,
+    //   address,
+    //   dob,
+    // };
+
     const employeeData = {
       name,
-      departmentId,
-      managerId,
+      dept_id: departmentIdInt,
+      manager_id: managerIdInt,
       email,
-      phone,
+      phone: phone.toString(),
       address,
       dob,
     };
 
-    console.log('Employee Data:', employeeData);
+    try {
+      const response = await fetch('http://localhost:9036/employees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(employeeData),
+      });
+  
+      if (response.ok) {
+        console.log('Employee added successfully');
+        // Clear the form
+        setName('');
+        setDepartmentId('1');
+        setManagerId('');
+        setEmail('');
+        setPhone('');
+        setAddress('');
+        setDob('');
+        setErrorMessage('');
+      } else {
+        console.error('Error adding employee:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
 
-    setName('');
-    setDepartmentId(101);
-    setManagerId('');
-    setEmail('');
-    setPhone('');
-    setAddress('');
-    setDob('');
-    setErrorMessage('');
+    // console.log('Employee Data:', employeeData);
+
+    // setName('');
+    // setDepartmentId(101);
+    // setManagerId('');
+    // setEmail('');
+    // setPhone('');
+    // setAddress('');
+    // setDob('');
+    // setErrorMessage('');
   };
 
   return (

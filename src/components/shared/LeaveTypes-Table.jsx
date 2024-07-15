@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Input, Select, Button, Popconfirm } from 'antd';
 import { MinusCircleFilled } from '@ant-design/icons';
 
@@ -8,36 +8,66 @@ const { Option } = Select;
 const data_leavetypes = [
   {
     key: '1',
-    leavetypeid: 1,
-    leavetypecode: 101,
-    leavetypename: 'Annual Leave',
+    leave_type_id: 1,
+    //leavetypecode: 101,
+    leave_type_name: 'Annual Leave',
   },
   {
     key: '2',
-    leavetypeid: 2,
-    leavetypecode: 102,
-    leavetypename: 'Medical Leave',
+    leave_type_id: 2,
+    //leavetypecode: 102,
+    leave_type_name: 'Medical Leave',
   },
   {
     key: '3',
-    leavetypeid: 3,
-    leavetypecode: 103,
-    leavetypename: 'Sick Leave',
+    leave_type_id: 3,
+    //leavetypecode: 103,
+    leave_type_name: 'Sick Leave',
   },
 ];
 
 const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
   const [searchText, setSearchText] = useState('');
-  const [searchColumn, setSearchColumn] = useState('leavetypename');
+  const [searchColumn, setSearchColumn] = useState('leave_type_name');
   const [data, setData] = useState(dataleavetypes);
+
+  useEffect(() => {
+    fetchLeaveTypes();
+  }, []);
+
+  const fetchLeaveTypes = async () => {
+    try {
+      const response = await fetch('http://localhost:9036/leavetypes');
+      if (response.ok) {
+        const leavetypes = await response.json();
+        setData(leavetypes);
+      } else {
+        console.error('Failed to fetch leave types:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching leave types:', error);
+    }
+  };
 
   const handleSearch = (selectedColumn, value) => {
     setSearchColumn(selectedColumn);
     setSearchText(value);
   };
 
-  const handleDelete = (key) => {
-    setData(data.filter(item => item.key !== key));
+  const handleDelete = async (key) => {
+    try {
+      const response = await fetch(`http://localhost:9036/leavetypes/${key}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setData(data.filter(item => item.key !== key));
+        console.log('Leave Type deleted successfully');
+      } else {
+        console.error('Error deleting leave type:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
   };
 
   const columns_leavetypes = [
@@ -48,7 +78,7 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
       render: (record) => (
         <Popconfirm
           title="Are you sure to delete this row?"
-          onConfirm={() => handleDelete(record.key)}
+          onConfirm={() => handleDelete(record.leave_type_id)}
           okText="Yes"
           cancelText="No"
         >
@@ -65,19 +95,19 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
     },
     {
       title: <div data-testid='leavetypeid'>Id</div>,
-      dataIndex: 'leavetypeid',
+      dataIndex: 'leave_type_id',
       key: 'leavetypeid',
       sorter: (a, b) => a.leavetypeid - b.leavetypeid,
     },
-    {
-      title: <div data-testid='leavetypecode'>Code</div>,
-      dataIndex: 'leavetypecode',
-      key: 'leavetypecode',
-      sorter: (a, b) => a.leavetypecode - b.leavetypecode,
-    },
+    // {
+    //   title: <div data-testid='leavetypecode'>Code</div>,
+    //   dataIndex: 'leavetypecode',
+    //   key: 'leavetypecode',
+    //   sorter: (a, b) => a.leavetypecode - b.leavetypecode,
+    // },
     {
       title: <div data-testid='leavetypename'>Leave Type Name</div>,
-      dataIndex: 'leavetypename',
+      dataIndex: 'leave_type_name',
       key: 'leavetypename',
       sorter: (a, b) => a.leavetypename.localeCompare(b.leavetypename),
     },
@@ -96,7 +126,6 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
           onChange={value => setSearchColumn(value)}
         >
           <Option value="leavetypeid">Id</Option>
-          <Option value="leavetypecode">Code</Option>
           <Option value="leavetypename">Leave Type Name</Option>
         </Select>
         <Search

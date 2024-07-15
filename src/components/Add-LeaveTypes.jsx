@@ -4,31 +4,31 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 
 const LeaveTypesAdd = () => {
   const [leavetypename, setLeaveTypeName] = useState('');
-  const [code, setCode] = useState('');
+  //const [code, setCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const isValidLeaveTypeName = /^\S+[A-Za-z ]+$/.test(leavetypename);
-  const isValidCode = /^\d+$/.test(code);
+  //const isValidCode = /^\d+$/.test(code);
 
 
   const isFormValid = () => {
     return (
       leavetypename !== '' &&
-      code !== '' &&
-      isValidLeaveTypeName && isValidCode
+      //code !== '' &&
+      isValidLeaveTypeName //&& isValidCode
     );
 
   };
 
   const isFilled = () => {
     return (
-      leavetypename !== '' &&
-      code !== ''
+      leavetypename !== '' //&&
+      //code !== ''
     );
 
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!isFilled()) {
       setErrorMessage('Please fill in all asterix fields.');
       return;
@@ -37,21 +37,42 @@ const LeaveTypesAdd = () => {
       setErrorMessage('Leave Type Name should be in text format');
         return;
     }
-    if (!isValidCode) {
-      setErrorMessage('Code should be numeric');
-        return;
-    }
+    // if (!isValidCode) {
+    //   setErrorMessage('Code should be numeric');
+    //     return;
+    // }
     
     const leavetypeData = {
-      code,
+      //code,
       leavetypename,
     };
 
-    console.log('Leave Type Data:', leavetypeData);
+    try {
+      const response = await fetch('http://localhost:9036/leavetypes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(leavetypeData),
+      });
+  
+      if (response.ok) {
+        console.log('Leave Type added successfully');
+        // Clear the form
+        setLeaveTypeName('');
+        setErrorMessage('');
+      } else {
+        console.error('Error adding leave type:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
 
-    setLeaveTypeName('');
-    setCode('');
-    setErrorMessage('');
+    // console.log('Leave Type Data:', leavetypeData);
+
+    // setLeaveTypeName('');
+    // //setCode('');
+    // setErrorMessage('');
   };
 
   return (
@@ -75,7 +96,7 @@ const LeaveTypesAdd = () => {
               {errorMessage}
             </div>
           )}
-          <fieldset className="mb-[15px] flex items-center gap-5">
+          {/* <fieldset className="mb-[15px] flex items-center gap-5">
             <label className="text-indigo11 w-[90px] text-right text-[15px]">
               Code<span className="text-red-600">*</span>
             </label>
@@ -86,7 +107,7 @@ const LeaveTypesAdd = () => {
               onChange={(e) => setCode(e.target.value)}
               data-testid='codelabel'
             />
-          </fieldset>
+          </fieldset> */}
           <fieldset className="mb-[15px] flex items-center gap-5">
             <label className="text-indigo11 w-[90px] text-right text-[14px]">
               Leave Type Name<span className="text-red-600">*</span>

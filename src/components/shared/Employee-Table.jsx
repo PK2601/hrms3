@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { Table, Input, Select, Button, Popconfirm } from 'antd';
 import { MinusCircleFilled } from '@ant-design/icons';
 import EmployeeModify from '../Modify-Employee';
@@ -9,10 +9,10 @@ const { Option } = Select;
 const data_emp = [
   {
     key: '1',
-    employeeid: 1,
+    emp_id: 1,
     name: 'John Brown',
-    departmentid: 101,
-    managerid: 201,
+    dept_id: 1,
+    manager_id: 201,
     email: 'john.brown@example.com',
     phone: '1234567890',
     address: 'New York No. 1 Lake Park',
@@ -20,10 +20,10 @@ const data_emp = [
   },
   {
     key: '2',
-    employeeid: 2,
+    emp_id: 2,
     name: 'Jim Green',
-    departmentid: 102,
-    managerid: 202,
+    dept_id: 2,
+    manager_id: 202,
     email: 'jim.green@example.com',
     phone: '0987654321',
     address: 'London No. 1 Lake Park',
@@ -31,10 +31,10 @@ const data_emp = [
   },
   {
     key: '3',
-    employeeid: 3,
+    emp_id: 3,
     name: 'Joe Black',
-    departmentid: 103,
-    managerid: 203,
+    dept_id: 3,
+    manager_id: 203,
     email: 'joe.black@example.com',
     phone: '1112223333',
     address: 'Sydney No. 1 Lake Park',
@@ -42,10 +42,10 @@ const data_emp = [
   },
   {
     key: '4',
-    employeeid: 4,
+    emp_id: 4,
     name: 'Jane Doe',
-    departmentid: 104,
-    managerid: 204,
+    dept_id: 4,
+    manager_id: 204,
     email: 'jane.doe@example.com',
     phone: '4445556666',
     address: 'San Francisco No. 2 Lake Park',
@@ -53,10 +53,10 @@ const data_emp = [
   },
   {
     key: '5',
-    employeeid: 5,
+    emp_id: 5,
     name: 'Michael Johnson',
-    departmentid: 105,
-    managerid: 205,
+    dept_id: 5,
+    manager_id: 205,
     email: 'michael.johnson@example.com',
     phone: '7778889999',
     address: 'Los Angeles No. 3 Lake Park',
@@ -64,20 +64,50 @@ const data_emp = [
   },
 ];
 
-
 const TablesEmp = ({dataemp = data_emp}) => {
   const [searchText, setSearchText] = useState('');
   const [searchColumn, setSearchColumn] = useState('name');
   const [data, setData] = useState(dataemp);
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch('http://localhost:9036/employees');
+      if (response.ok) {
+        const employees = await response.json();
+        setData(employees);
+      } else {
+        console.error('Failed to fetch employees:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
+  };
 
   const handleSearch = (selectedColumn, value) => {
     setSearchColumn(selectedColumn);
     setSearchText(value);
   };
 
-  const handleDelete = (key) => {
-    setData(data.filter(item => item.key !== key));
+  const handleDelete = async (key) => {
+    try {
+      const response = await fetch(`http://localhost:9036/employees/${key}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setData(data.filter(item => item.key !== key));
+        console.log('Employee deleted successfully');
+      } else {
+        console.error('Error deleting employee:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
   };
+
 
   const columns_emp = [
     {
@@ -87,7 +117,7 @@ const TablesEmp = ({dataemp = data_emp}) => {
       render: (record) => (
         <Popconfirm
           title="Are you sure to delete this row?"
-          onConfirm={() => handleDelete(record.key)}
+          onConfirm={() => handleDelete(record.emp_id)}
           okText="Yes"
           cancelText="No"
         >
@@ -104,7 +134,7 @@ const TablesEmp = ({dataemp = data_emp}) => {
     },
     {
       title: <div  data-testid='id'>Id</div>,
-      dataIndex: 'employeeid',
+      dataIndex: 'emp_id',
       key: 'employeeid',
       sorter: (a, b) => a.employeeid - b.employeeid,
     },
@@ -116,13 +146,13 @@ const TablesEmp = ({dataemp = data_emp}) => {
     },
     {
       title: <div  data-testid='department'>Department</div>,
-      dataIndex: 'departmentid',
+      dataIndex: 'dept_id',
       key: 'departmentid',
       sorter: (a, b) => a.departmentid - b.departmentid,
     },
     {
       title: <div  data-testid='manager'>Manager</div>,
-      dataIndex: 'managerid',
+      dataIndex: 'manager_id',
       key: 'managerid',
       sorter: (a, b) => a.managerid - b.managerid,
     },

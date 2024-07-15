@@ -3,55 +3,76 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 
 const DepartmentAdd = () => {
-  const [departmentname, setDepartmentName] = useState('');
-  const [code, setCode] = useState('');
+  const [departmentname, setdepartmentname] = useState('');
+  //const [code, setCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const isValidDepartmentName = /^\S+[A-Za-z ]+$/.test(departmentname);
-  const isValidCode = /^\d+$/.test(code);
+  const isValiddepartmentname = /^\S+[A-Za-z ]+$/.test(departmentname);
+  //const isValidCode = /^\d+$/.test(code);
 
 
   const isFormValid = () => {
     return (
       departmentname !== '' &&
-      code !== '' &&
-      isValidDepartmentName && isValidCode
+      //code !== '' &&
+      isValiddepartmentname //&& isValidCode
     );
 
   };
 
   const isFilled = () => {
     return (
-      departmentname !== '' &&
-      code !== ''
+      departmentname !== '' //&&
+      //code !== ''
     );
 
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!isFilled()) {
       setErrorMessage('Please fill in all asterix fields.');
       return;
     }
-    if (!isValidDepartmentName) {
+    if (!isValiddepartmentname) {
       setErrorMessage('Department Name should be in text format');
         return;
     }
-    if (!isValidCode) {
-      setErrorMessage('Code should be numeric');
-        return;
-    }
+    // if (!isValidCode) {
+    //   setErrorMessage('Code should be numeric');
+    //     return;
+    // }
     
     const departmentData = {
-      code,
+      //code,
       departmentname,
     };
 
-    console.log('Department Data:', departmentData);
+    try {
+      const response = await fetch('http://localhost:9036/departments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(departmentData),
+      });
+  
+      if (response.ok) {
+        console.log('Department added successfully');
+        // Clear the form
+        setdepartmentname('');
+        setErrorMessage('');
+      } else {
+        console.error('Error adding department:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
 
-    setDepartmentName('');
-    setCode('');
-    setErrorMessage('');
+    // console.log('Department Data:', departmentData);
+
+    // setdepartmentname('');
+    // //setCode('');
+    // setErrorMessage('');
   };
 
   return (
@@ -75,7 +96,7 @@ const DepartmentAdd = () => {
               {errorMessage}
             </div>
           )}
-          <fieldset className="mb-[15px] flex items-center gap-5">
+          {/* <fieldset className="mb-[15px] flex items-center gap-5">
             <label className="text-indigo11 w-[90px] text-right text-[15px]">
               Code<span className="text-red-600">*</span>
             </label>
@@ -86,7 +107,7 @@ const DepartmentAdd = () => {
               onChange={(e) => setCode(e.target.value)}
               data-testid='codelabel'
             />
-          </fieldset>
+          </fieldset> */}
           <fieldset className="mb-[15px] flex items-center gap-5">
             <label className="text-indigo11 w-[90px] text-right text-[14px]">
               Department Name<span className="text-red-600">*</span>
@@ -95,7 +116,7 @@ const DepartmentAdd = () => {
               className="text-indigo11 shadow-indigo7 focus:shadow-indigo8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
               id="departmentname"
               value={departmentname}
-              onChange={(e) => setDepartmentName(e.target.value)}
+              onChange={(e) => setdepartmentname(e.target.value)}
               data-testid='departmentnamelabel'
             />
           </fieldset>

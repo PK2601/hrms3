@@ -1,7 +1,7 @@
 package testing2
 
 import (
-	"Project/main/funcs"
+	"Project/main/functions"
 	"database/sql"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gin-gonic/gin"
@@ -11,17 +11,13 @@ import (
 	"testing"
 )
 
-var db *sql.DB
-var mock sqlmock.Sqlmock
-var repo *funcs.Repo
-
 func init() {
 	var err error
 	db, mock, err = sqlmock.New()
 	if err != nil {
 		panic("failed to open a stub database connection")
 	}
-	repo = funcs.NewRepo(db)
+	repo = functions.NewRepo(db)
 }
 
 func TestGetHR(t *testing.T) {
