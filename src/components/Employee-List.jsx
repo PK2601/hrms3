@@ -9,7 +9,7 @@ export default function EmployeeList(){
             <div className='flex flex-row gap-4'>
             <div style={{ marginBottom: '15px' }}><EmployeeAdd  /></div>
             </div>
-            <TablesEmp />
+            <div className='flex flex-col gap-14 max-h-screen overflow-y-auto pb-60'><TablesEmp /></div>
         </div>
     )
 }

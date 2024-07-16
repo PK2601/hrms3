@@ -44,7 +44,7 @@ const DepartmentAdd = () => {
     
     const departmentData = {
       //code,
-      departmentname,
+      Dept_Name: departmentname,
     };
 
     try {

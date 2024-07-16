@@ -5,26 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e7476da6-1348-4d18-90f5-94ceb6acae90" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/testing2/Nationalholiday1_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Employee/Employee.go" beforeDir="false" afterPath="$PROJECT_DIR$/Employee/Employee.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/database/dbInit.go" beforeDir="false" afterPath="$PROJECT_DIR$/main/database/dbInit.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/functions/a.go" beforeDir="false" afterPath="$PROJECT_DIR$/main/functions/a.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/testing.go" beforeDir="false" afterPath="$PROJECT_DIR$/main/testing.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testing/getEmployee_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/testing/getEmployee_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testing2/DeleteEmployee_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/testing2/DeleteEmployee_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testing2/getDepartmentByID_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/testing2/getDepartmentByID_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testing2/getEmployeeByID_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/testing2/getEmployeeByID_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testing2/getHr_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/testing2/getHr_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/Tests/EmployeeList.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/Tests/EmployeeList.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/Tests/ModifyEmployee.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/Tests/ModifyEmployee.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/components/Add-Department.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/Add-Department.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/components/Add-Employee.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/Add-Employee.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/components/Add-LeaveTypes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/Add-LeaveTypes.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/components/shared/Department-Table.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/shared/Department-Table.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/components/shared/Employee-Table.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/shared/Employee-Table.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/components/shared/LeaveTypes-Table.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/shared/LeaveTypes-Table.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -135,8 +135,8 @@ const TablesEmp = ({dataemp = data_emp}) => {
     {
       title: <div  data-testid='id'>Id</div>,
       dataIndex: 'emp_id',
-      key: 'employeeid',
-      sorter: (a, b) => a.employeeid - b.employeeid,
+      key: 'emp_id',
+      sorter: (a, b) => a.emp_id - b.emp_id,
     },
     {
       title: <div  data-testid='name'>Name</div>,
@@ -147,14 +147,14 @@ const TablesEmp = ({dataemp = data_emp}) => {
     {
       title: <div  data-testid='department'>Department</div>,
       dataIndex: 'dept_id',
-      key: 'departmentid',
-      sorter: (a, b) => a.departmentid - b.departmentid,
+      key: 'dept_id',
+      sorter: (a, b) => a.dept_id - b.dept_id,
     },
     {
       title: <div  data-testid='manager'>Manager</div>,
       dataIndex: 'manager_id',
-      key: 'managerid',
-      sorter: (a, b) => a.managerid - b.managerid,
+      key: 'manager_id',
+      sorter: (a, b) => a.manager_id - b.manager_id,
     },
     {
       title: <div  data-testid='email'>Email</div>,
@@ -166,7 +166,7 @@ const TablesEmp = ({dataemp = data_emp}) => {
       title: <div  data-testid='phone'>Phone</div>,
       dataIndex: 'phone',
       key: 'phone',
-      sorter: (a, b) => a.phone.localeCompare(b.phone),
+      sorter: (a, b) => a.phone - (b.phone),
     },
     {
       title: <div  data-testid='address'>Address</div>,
@@ -201,10 +201,10 @@ const TablesEmp = ({dataemp = data_emp}) => {
           style={{ width: 120, marginRight: 8 }}
           onChange={value => setSearchColumn(value)}
         >
-          <Option value="employeeid">Id</Option>
+          <Option value="emp_id">Id</Option>
           <Option value="name">Name</Option>
-          <Option value="departmentid">Department</Option>
-          <Option value="managerid">Manager</Option>
+          <Option value="dept_id">Department</Option>
+          <Option value="manager_id">Manager</Option>
           <Option value="email">Email</Option>
           <Option value="phone">Phone</Option>
           <Option value="address">Address</Option>

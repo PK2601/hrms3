@@ -7,7 +7,7 @@ export default function LeaveTypes(){
         <div>
             <p style={{ marginBottom: '20px', fontSize: '1.5rem', color: 'slate-800' }}>Leave Types</p>
             <div style={{ marginBottom: '15px' }}><LeaveTypesAdd  /></div>
-            <TablesLeaveTypes />
+            <div className='flex flex-col gap-14 max-h-screen overflow-y-auto pb-60'><TablesLeaveTypes /></div>
         </div>
     )
 }

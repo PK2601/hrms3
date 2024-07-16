@@ -96,8 +96,8 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
     {
       title: <div data-testid='leavetypeid'>Id</div>,
       dataIndex: 'leave_type_id',
-      key: 'leavetypeid',
-      sorter: (a, b) => a.leavetypeid - b.leavetypeid,
+      key: 'leave_type_id',
+      sorter: (a, b) => a.leave_type_id - b.leave_type_id,
     },
     // {
     //   title: <div data-testid='leavetypecode'>Code</div>,
@@ -108,8 +108,8 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
     {
       title: <div data-testid='leavetypename'>Leave Type Name</div>,
       dataIndex: 'leave_type_name',
-      key: 'leavetypename',
-      sorter: (a, b) => a.leavetypename.localeCompare(b.leavetypename),
+      key: 'leave_type_name',
+      sorter: (a, b) => a.leave_type_name.localeCompare(b.leave_type_name),
     },
   ];
 
@@ -121,12 +121,12 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
     <div>
       <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
         <Select
-          defaultValue="leavetypename"
+          defaultValue="leave_type_name"
           style={{ width: 200, marginRight: 8 }}
           onChange={value => setSearchColumn(value)}
         >
-          <Option value="leavetypeid">Id</Option>
-          <Option value="leavetypename">Leave Type Name</Option>
+          <Option value="leave_type_id">Id</Option>
+          <Option value="leave_type_name">Leave Type Name</Option>
         </Select>
         <Search
           placeholder={`Search ${searchColumn}`}

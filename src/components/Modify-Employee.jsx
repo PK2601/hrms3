@@ -15,19 +15,23 @@ const EmployeeModify = ({record}) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const departments = [
-    { id: 101, name: 'Human Resources' },
-    { id: 102, name: 'Information Technology' },
-    { id: 103, name: 'Finance' },
-    { id: 104, name: 'Sales' },
-    { id: 105, name: 'Marketing' },
+    { id: 1, name: 'Human Resources' },
+    { id: 2, name: 'Information Technology' },
+    { id: 3, name: 'Finance' },
+    { id: 4, name: 'Sales' },
+    { id: 5, name: 'Marketing' },
   ];
 
   useEffect(() => {
     if (record) {
-      setId(record.employeeid);
+      setId(record.emp_id);
       setName(record.name);
-      setDepartmentId(record.departmentid);
-      setManagerId(record.managerid);
+      setDepartmentId(record.dept_id);
+      if (record.manager_id === null) {
+        setManagerId('');
+      } else {
+        setManagerId(record.manager_id);
+      }      
       setEmail(record.email);
       setPhone(record.phone);
       setAddress(record.address);
@@ -152,7 +156,7 @@ const EmployeeModify = ({record}) => {
   //     setErrorMessage('Date of Birth should be of format YYYY-MM-DD');
   //       return;
   //   }
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!isFilled()) {
       setErrorMessage('Please fill in all asterix fields.');
       return;
@@ -186,29 +190,71 @@ const EmployeeModify = ({record}) => {
       setErrorMessage('Date of Birth should be of format YYYY-MM-DD');
       return;
     }
-    
+
+    const departmentIdInt = parseInt(departmentId);
+    const managerIdInt = managerId ? parseInt(managerId) : null;
+
     const modifiedemployeeData = {
       id,
       name,
-      departmentId,
-      managerId,
+      dept_id: departmentIdInt,
+      manager_id: managerIdInt,
       email,
-      phone,
+      phone: phone.toString(),
       address,
       dob,
     };
 
-    console.log('Modified Employee Data:', modifiedemployeeData);
+    try {
+      const response = await fetch(`http://localhost:9036/employees/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(modifiedemployeeData),
+      });
+  
+      if (response.ok) {
+        console.log('Employee modified successfully');
+        setId('');
+        setName('');
+        setDepartmentId('');
+        setManagerId('');
+        setEmail('');
+        setPhone('');
+        setAddress('');
+        setDob('');
+        setErrorMessage('');
+      } else {
+        console.error('Error modifying employee:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
 
-    setId('');
-    setName('');
-    setDepartmentId('');
-    setManagerId('');
-    setEmail('');
-    setPhone('');
-    setAddress('');
-    setDob('');
-    setErrorMessage('');
+    
+  //   const modifiedemployeeData = {
+  //     id,
+  //     name,
+  //     departmentId,
+  //     managerId,
+  //     email,
+  //     phone,
+  //     address,
+  //     dob,
+  //   };
+
+  //   console.log('Modified Employee Data:', modifiedemployeeData);
+
+  //   setId('');
+  //   setName('');
+  //   setDepartmentId('');
+  //   setManagerId('');
+  //   setEmail('');
+  //   setPhone('');
+  //   setAddress('');
+  //   setDob('');
+  //   setErrorMessage('');
   };
 
   return (

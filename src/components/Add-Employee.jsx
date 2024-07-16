@@ -5,7 +5,7 @@ import { Cross2Icon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icon
 
 const EmployeeAdd = () => {
   const [name, setName] = useState('');
-  const [departmentId, setDepartmentId] = useState(101);
+  const [departmentId, setDepartmentId] = useState(1);
   const [managerId, setManagerId] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');

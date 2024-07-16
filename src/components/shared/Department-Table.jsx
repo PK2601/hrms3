@@ -110,8 +110,8 @@ const TablesDept = ({datadept = data_dept}) => {
     {
       title: <div data-testid='departmentid'>Id</div>,
       dataIndex: 'dept_id',
-      key: 'departmentid',
-      sorter: (a, b) => a.departmentid - b.departmentid,
+      key: 'dept_id',
+      sorter: (a, b) => a.dept_id - b.dept_id,
     },
     // {
     //   title: <div data-testid='departmentcode'>Code</div>,
@@ -122,8 +122,8 @@ const TablesDept = ({datadept = data_dept}) => {
     {
       title: <div data-testid='departmentname'>Department Name</div>,
       dataIndex: 'Dept_Name',
-      key: 'departmentname',
-      sorter: (a, b) => a.departmentname.localeCompare(b.departmentname),
+      key: 'Dept_Name',
+      sorter: (a, b) => a.Dept_Name.localeCompare(b.Dept_Name),
     },
   ];
 
@@ -135,12 +135,12 @@ const TablesDept = ({datadept = data_dept}) => {
     <div>
       <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
         <Select
-          defaultValue="departmentname"
+          defaultValue="Dept_Name"
           style={{ width: 200, marginRight: 8 }}
           onChange={value => setSearchColumn(value)}
         >
-          <Option value="departmentid">Id</Option>
-          <Option value="departmentname"> Department Name</Option>
+          <Option value="dept_id">Id</Option>
+          <Option value="Dept_Name"> Department Name</Option>
         </Select>
         <Search
           placeholder={`Search ${searchColumn}`}

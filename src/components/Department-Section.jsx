@@ -7,7 +7,7 @@ export default function Departmentsection(){
         <div>
             <p style={{ marginBottom: '20px', fontSize: '1.5rem', color: 'slate-800' }}>Department List</p>
             <div style={{ marginBottom: '15px' }}><DepartmentAdd  /></div>
-            <TablesDept />
+            <div className='flex flex-col gap-14 max-h-screen overflow-y-auto pb-60'><TablesDept /></div>
         </div>
     )
 }

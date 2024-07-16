@@ -44,7 +44,7 @@ const LeaveTypesAdd = () => {
     
     const leavetypeData = {
       //code,
-      leavetypename,
+      leave_type_name: leavetypename,
     };
 
     try {
