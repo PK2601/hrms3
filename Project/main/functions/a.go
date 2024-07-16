@@ -698,6 +698,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type Repo struct {
@@ -1296,13 +1297,25 @@ func (r *Repo) GetLeaves(c *gin.Context) {
 	var leaves []Employee.Leave
 	for rows.Next() {
 		var leave Employee.Leave
+		var startDate, endDate string
 		var approvalStatus sql.NullBool
 		var approvedBy sql.NullInt64
-		err := rows.Scan(&leave.EmpId, &leave.StartDate, &leave.EndDate, &leave.LeaveType_id, &approvalStatus, &approvedBy)
+		err := rows.Scan(&leave.EmpId, &startDate, &endDate, &leave.LeaveType_id, &approvalStatus, &approvedBy)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+		leave.StartDate, err = time.Parse("2006-01-02", startDate)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		leave.EndDate, err = time.Parse("2006-01-02", endDate)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
 		if approvalStatus.Valid {
 			leave.Approval_status = &approvalStatus.Bool
 		}
