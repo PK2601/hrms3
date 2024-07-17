@@ -698,7 +698,6 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type Repo struct {
@@ -1294,35 +1293,38 @@ func (r *Repo) GetLeaves(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var leaves []Employee.Leave
+	var leaves []gin.H
 	for rows.Next() {
-		var leave Employee.Leave
+		var leave gin.H = make(gin.H)
+		var empId int
 		var startDate, endDate string
+		var leaveTypeId int
 		var approvalStatus sql.NullBool
 		var approvedBy sql.NullInt64
-		err := rows.Scan(&leave.EmpId, &startDate, &endDate, &leave.LeaveType_id, &approvalStatus, &approvedBy)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		leave.StartDate, err = time.Parse("2006-01-02", startDate)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		leave.EndDate, err = time.Parse("2006-01-02", endDate)
+
+		err := rows.Scan(&empId, &startDate, &endDate, &leaveTypeId, &approvalStatus, &approvedBy)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
+		leave["EmpId"] = empId
+		leave["StartDate"] = startDate
+		leave["EndDate"] = endDate
+		leave["LeaveType_id"] = leaveTypeId
+
 		if approvalStatus.Valid {
-			leave.Approval_status = &approvalStatus.Bool
+			leave["Approval_status"] = approvalStatus.Bool
+		} else {
+			leave["Approval_status"] = nil
 		}
+
 		if approvedBy.Valid {
-			approvedByInt := int(approvedBy.Int64)
-			leave.ApprovedBy = &approvedByInt
+			leave["ApprovedBy"] = approvedBy.Int64
+		} else {
+			leave["ApprovedBy"] = nil
 		}
+
 		leaves = append(leaves, leave)
 	}
 

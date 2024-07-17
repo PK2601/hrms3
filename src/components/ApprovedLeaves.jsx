@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Input, Select, Button, Popconfirm } from 'antd';
 import { MinusCircleFilled } from '@ant-design/icons';
 
@@ -9,42 +9,42 @@ const data_approvedleaves = [
     {
       key: '1',
       id: 1,
-      employeeid: 1,
-      leavetypeid: 101,
-      startdate: '2024-07-01',
-      enddate: '2024-07-05',
+      emp_id: 1,
+      leave_type_id: 101,
+      start_date: '2024-07-01',
+      end_date: '2024-07-05',
     },
     {
       key: '2',
       id: 2,
-      employeeid: 2,
-      leavetypeid: 102,
-      startdate: '2024-07-10',
-      enddate: '2024-07-15',
+      emp_id: 2,
+      leave_type_id: 102,
+      start_date: '2024-07-10',
+      end_date: '2024-07-15',
     },
     {
       key: '3',
       id: 3,
-      employeeid: 3,
-      leavetypeid: 103,
-      startdate: '2024-08-01',
-      enddate: '2024-08-05',
+      emp_id: 3,
+      leave_type_id: 103,
+      start_date: '2024-08-01',
+      end_date: '2024-08-05',
     },
     {
       key: '4',
       id: 4,
-      employeeid: 4,
-      leavetypeid: 104,
-      startdate: '2024-09-01',
-      enddate: '2024-09-10',
+      emp_id: 4,
+      leave_type_id: 104,
+      start_date: '2024-09-01',
+      end_date: '2024-09-10',
     },
     {
       key: '5',
       id: 5,
-      employeeid: 5,
-      leavetypeid: 105,
-      startdate: '2024-10-01',
-      enddate: '2024-10-05',
+      emp_id: 5,
+      leave_type_id: 105,
+      start_date: '2024-10-01',
+      end_date: '2024-10-05',
     },
   ];
   
@@ -52,8 +52,30 @@ const data_approvedleaves = [
 
 const ApprovedLeaves = ({dataapprovedleaves = data_approvedleaves}) => {
   const [searchText, setSearchText] = useState('');
-  const [searchColumn, setSearchColumn] = useState('employeeid');
+  const [searchColumn, setSearchColumn] = useState('emp_id');
   const [data, setData] = useState(dataapprovedleaves);
+
+  const fetchApprovedLeaves = async () => {
+    try {
+      const response = await fetch('http://localhost:9036/leaves/status?status=approved');
+      if (response.ok) {
+        const approvedleaves = await response.json();
+        setData(approvedleaves);
+      } else {
+        console.error('Failed to fetch approved leaves:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching approved leaves:', error);
+    }
+  };
+
+  const refreshTable = useCallback(async () => {
+    await fetchApprovedLeaves();
+  }, []);
+
+  useEffect(() => {
+    refreshTable();
+  }, [refreshTable]);
 
   const handleSearch = (selectedColumn, value) => {
     setSearchColumn(selectedColumn);
@@ -65,35 +87,35 @@ const ApprovedLeaves = ({dataapprovedleaves = data_approvedleaves}) => {
   };
 
   const columns_approvedleaves = [
-    {
-      title: <div data-testid='id'>Id</div>,
-      dataIndex: 'id',
-      key: 'id',
-      sorter: (a, b) => a.id - b.id,
-    },
+    // {
+    //   title: <div data-testid='id'>Id</div>,
+    //   dataIndex: 'id',
+    //   key: 'id',
+    //   sorter: (a, b) => a.id - b.id,
+    // },
     {
         title: <div data-testid='employeeid'>Employee Id</div>,
-        dataIndex: 'employeeid',
-        key: 'employeeid',
-        sorter: (a, b) => a.employeeid - b.employeeid,
+        dataIndex: 'emp_id',
+        key: 'emp_id',
+        sorter: (a, b) => a.emp_id - b.emp_id,
       },
       {
         title: <div data-testid='leavetypeid'>Leave Type Id</div>,
-        dataIndex: 'leavetypeid',
-        key: 'leavetypeid',
-        sorter: (a, b) => a.leavetypeid - b.leavetypeid,
+        dataIndex: 'leave_type_id',
+        key: 'leave_type_id',
+        sorter: (a, b) => a.leave_type_id - b.leave_type_id,
       },
     {
       title: <div data-testid='startdate'>Start Date</div>,
-      dataIndex: 'startdate',
-      key: 'startdate',
-      sorter: (a, b) => a.startdate.localeCompare(b.startdate),
+      dataIndex: 'start_date',
+      key: 'start_date',
+      sorter: (a, b) => a.start_date.localeCompare(b.start_date),
     },
     {
       title: <div data-testid='enddate'>End Date</div>,
-      dataIndex: 'enddate',
-      key: 'enddate',
-      sorter: (a, b) => a.enddate.localeCompare(b.enddate),
+      dataIndex: 'end_date',
+      key: 'end_date',
+      sorter: (a, b) => a.end_date.localeCompare(b.end_date),
     },
       {
         title: <div data-testid='decline'>Decline</div>,
@@ -129,15 +151,14 @@ const ApprovedLeaves = ({dataapprovedleaves = data_approvedleaves}) => {
     <div>
       <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
         <Select
-          defaultValue="employeeid"
+          defaultValue="emp_id"
           style={{ width: 150, marginRight: 8 }}
           onChange={value => setSearchColumn(value)}
         >
-          <Option value="id">Id</Option>
-          <Option value="employeeid">Employee Id</Option>
-          <Option value="leavetypeid">Leave Type Id</Option>
-          <Option value="startdate">Start Date</Option>
-          <Option value="enddate">End Date</Option>
+          <Option value="emp_id">Employee Id</Option>
+          <Option value="leave_type_id">Leave Type Id</Option>
+          <Option value="start_date">Start Date</Option>
+          <Option value="end_date">End Date</Option>
         </Select>
         <Search
           placeholder={`Search ${searchColumn}`}

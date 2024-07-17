@@ -2,7 +2,6 @@ package Employee
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -44,12 +43,12 @@ func (e Employee) String() string {
 }
 
 type Leave struct {
-	EmpId           int       `json:"emp_id" db:"EMP_ID"`
-	StartDate       time.Time `json:"start_date" db:"START_DATE"`
-	EndDate         time.Time `json:"end_date" db:"END_DATE"`
-	LeaveType_id    int       `json:"leave_type_id" db:"LEAVE_TYPE_ID"`
-	Approval_status *bool     `json:"approval_Status" db:"APPROVAL_STATUS"`
-	ApprovedBy      *int      `json:"approved_by,omitempty" db:"APPROVAL_BY"`
+	EmpId           int    `json:"emp_id" db:"EMP_ID"`
+	StartDate       string `json:"start_date" db:"START_DATE"`
+	EndDate         string `json:"end_date" db:"END_DATE"`
+	LeaveType_id    int    `json:"leave_type_id" db:"LEAVE_TYPE_ID"`
+	Approval_status *bool  `json:"approval_Status" db:"APPROVAL_STATUS"`
+	ApprovedBy      *int   `json:"approved_by,omitempty" db:"APPROVAL_BY"`
 }
 
 type Department struct {
@@ -102,48 +101,48 @@ type HR struct {
 	HR_ID int `json:"hr_id" db:"HR_ID"`
 }
 
-func (hr *HR) ApproveLeave(leave *Leave) error {
-	if leave.Approval_status != nil && *leave.Approval_status == true {
-		return errors.New(fmt.Sprintf("\n Leave has already been approved for : %d days by %v id: %d", leave.NoOfDays(), hr.Name, hr.EmpID))
-	}
-	*leave.Approval_status = true
-	leave.ApprovedBy = &hr.EmpID
-	fmt.Printf("\n Leave approved for : %d days\n", leave.NoOfDays())
+//func (hr *HR) ApproveLeave(leave *Leave) error {
+//	if leave.Approval_status != nil && *leave.Approval_status == true {
+//		return errors.New(fmt.Sprintf("\n Leave has already been approved for : %d days by %v id: %d", leave.NoOfDays(), hr.Name, hr.EmpID))
+//	}
+//	*leave.Approval_status = true
+//	leave.ApprovedBy = &hr.EmpID
+//	fmt.Printf("\n Leave approved for : %d days\n", leave.NoOfDays())
+//
+//	return nil
+//}
+//func (hr *HR) RejectLeave(leave *Leave) error {
+//	if leave.Approval_status != nil && *leave.Approval_status == false {
+//		return errors.New("\n Leave has already been rejected")
+//	}
+//	*leave.Approval_status = false
+//	leave.ApprovedBy = nil
+//	return nil
+//}
+//
+//func isNationalHoliday(date time.Time) bool {
+//	for _, nationalHoliday := range nationalHolidays {
+//		if !date.Before(nationalHoliday.StartDate) && !date.After(nationalHoliday.EndDate) {
+//			return true
+//		}
+//	}
+//	return false
+//}
+//func isWeekend(date time.Time) bool {
+//	day := date.Weekday()
+//	return day == time.Saturday || day == time.Sunday
+//}
 
-	return nil
-}
-func (hr *HR) RejectLeave(leave *Leave) error {
-	if leave.Approval_status != nil && *leave.Approval_status == false {
-		return errors.New("\n Leave has already been rejected")
-	}
-	*leave.Approval_status = false
-	leave.ApprovedBy = nil
-	return nil
-}
-
-func isNationalHoliday(date time.Time) bool {
-	for _, nationalHoliday := range nationalHolidays {
-		if !date.Before(nationalHoliday.StartDate) && !date.After(nationalHoliday.EndDate) {
-			return true
-		}
-	}
-	return false
-}
-func isWeekend(date time.Time) bool {
-	day := date.Weekday()
-	return day == time.Saturday || day == time.Sunday
-}
-
-func (leave *Leave) NoOfDays() int {
-	totalLeaves := 0
-	for date := leave.StartDate; !date.After(leave.EndDate); date = date.AddDate(0, 0, 1) {
-		if !isNationalHoliday(date) && !isWeekend(date) {
-			totalLeaves++
-		}
-	}
-	if totalLeaves == 0 {
-		fmt.Println("All Leaves requested for are national holidays")
-	}
-	//totalLeaves := int(leave.EndDate.Sub(leave.StartDate).Hours()/24) + 1
-	return totalLeaves
-}
+//func (leave *Leave) NoOfDays() int {
+//	totalLeaves := 0
+//	for date := leave.StartDate; !date.After(leave.EndDate); date = date.AddDate(0, 0, 1) {
+//		if !isNationalHoliday(date) && !isWeekend(date) {
+//			totalLeaves++
+//		}
+//	}
+//	if totalLeaves == 0 {
+//		fmt.Println("All Leaves requested for are national holidays")
+//	}
+//	//totalLeaves := int(leave.EndDate.Sub(leave.StartDate).Hours()/24) + 1
+//	return totalLeaves
+//}
