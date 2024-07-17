@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
+import { screen, fireEvent } from '@testing-library/react';
 
-const LeaveTypesAdd = () => {
+const LeaveTypesAdd = ({refreshTable}) => {
   const [leavetypename, setLeaveTypeName] = useState('');
   //const [code, setCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -61,6 +62,9 @@ const LeaveTypesAdd = () => {
         // Clear the form
         setLeaveTypeName('');
         setErrorMessage('');
+        const closeButton = screen.getByTestId('close');
+        fireEvent.click(closeButton);
+        refreshTable();
       } else {
         console.error('Error adding leave type:', response.statusText);
       }

@@ -7,6 +7,10 @@
     <list default="true" id="e7476da6-1348-4d18-90f5-94ceb6acae90" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/functions/a.go" beforeDir="false" afterPath="$PROJECT_DIR$/main/functions/a.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/testing.go" beforeDir="false" afterPath="$PROJECT_DIR$/main/testing.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/components/Add-Employee.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/Add-Employee.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/components/Modify-Employee.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/Modify-Employee.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/components/shared/Employee-Table.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../src/components/shared/Employee-Table.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

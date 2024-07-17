@@ -74,6 +74,7 @@ func main() {
 	router.GET("/leaves", repo.GetLeaves)
 	router.GET("/leaves/:empId", repo.GetLeaveByEmpID)
 	router.POST("/leaves", repo.CreateLeave)
+	router.GET("/leaves/status", repo.GetLeaveByStatus)
 
 	router.Run(":9036")
 }

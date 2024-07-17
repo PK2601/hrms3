@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Input, Select, Button, Popconfirm } from 'antd';
-import { MinusCircleFilled } from '@ant-design/icons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Table, Input, Select, Popconfirm } from 'antd';
+//import { MinusCircleFilled } from '@ant-design/icons';
+import DepartmentAdd from '../Add-Department';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -44,10 +45,6 @@ const TablesDept = ({datadept = data_dept}) => {
   const [searchColumn, setSearchColumn] = useState('Dept_Name');
   const [data, setData] = useState(datadept);
 
-  useEffect(() => {
-    fetchDepartments();
-  }, []);
-
   const fetchDepartments = async () => {
     try {
       const response = await fetch('http://localhost:9036/departments');
@@ -63,6 +60,14 @@ const TablesDept = ({datadept = data_dept}) => {
     }
   };
 
+  const refreshTable = useCallback(async () => {
+    await fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    refreshTable();
+  }, [refreshTable]);
+
   const handleSearch = (selectedColumn, value) => {
     setSearchColumn(selectedColumn);
     setSearchText(value);
@@ -76,6 +81,7 @@ const TablesDept = ({datadept = data_dept}) => {
       if (response.ok) {
         setData(data.filter(item => item.key !== key));
         console.log('Departments deleted successfully');
+        refreshTable();
       } else {
         console.error('Error deleting departmens:', response.statusText);
       }
@@ -85,28 +91,6 @@ const TablesDept = ({datadept = data_dept}) => {
   };
 
   const columns_dept = [
-    {
-      title: '',
-      key: 'delete',
-      width: 30,
-      render: (record) => (
-        <Popconfirm
-          title="Are you sure to delete this row?"
-          onConfirm={() => handleDelete(record.dept_id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button
-            type="primary"
-            danger
-            shape="circle"
-            icon={<MinusCircleFilled />}
-            size="small"
-            data-testid='deletebutton'
-          />
-        </Popconfirm>
-      ),
-    },
     {
       title: <div data-testid='departmentid'>Id</div>,
       dataIndex: 'dept_id',
@@ -125,6 +109,36 @@ const TablesDept = ({datadept = data_dept}) => {
       key: 'Dept_Name',
       sorter: (a, b) => a.Dept_Name.localeCompare(b.Dept_Name),
     },
+    {
+      title: '',
+      key: 'delete',
+      width: 250,
+      render: (record) => (
+        <div className="flex justify-center">
+        <Popconfirm
+          title="Are you sure to delete this row?"
+          onConfirm={() => handleDelete(record.dept_id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          {/* <Button
+            type="primary"
+            danger
+            shape="circle"
+            icon={<MinusCircleFilled />}
+            size="small"
+            data-testid='deletebutton'
+          /> */}
+          <button
+        className="text-red-600 shadow-red-400 hover:bg-red-200 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-red-600 focus:outline-none"
+        data-testid='deletebutton'
+      >
+        Delete
+      </button>
+        </Popconfirm>
+        </div>
+      ),
+    },
   ];
 
   const filteredData = data.filter(item => 
@@ -133,6 +147,9 @@ const TablesDept = ({datadept = data_dept}) => {
 
   return (
     <div>
+      <div style={{ marginBottom: 16, marginLeft: 5, marginTop:16 }}>
+        <DepartmentAdd refreshTable={refreshTable}/>
+      </div>
       <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
         <Select
           defaultValue="Dept_Name"

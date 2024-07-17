@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Select from '@radix-ui/react-select';
 import { Cross2Icon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
+import { screen, fireEvent } from '@testing-library/react';
 
-const EmployeeModify = ({record}) => {
+const EmployeeModify = ({record, refreshTable}) => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [departmentId, setDepartmentId] = useState('');
@@ -225,6 +226,9 @@ const EmployeeModify = ({record}) => {
         setAddress('');
         setDob('');
         setErrorMessage('');
+        const closeButton = screen.getByTestId('close');
+        fireEvent.click(closeButton);
+        refreshTable();
       } else {
         console.error('Error modifying employee:', response.statusText);
       }

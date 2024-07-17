@@ -1561,3 +1561,62 @@ func (r *Repo) DeleteHR(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "HR deleted successfully"})
 }
+
+func (r *Repo) GetLeaveByStatus(c *gin.Context) {
+	statusParam := c.Query("status")
+	var approvalStatus *bool
+
+	switch statusParam {
+	case "approved":
+		trueValue := true
+		approvalStatus = &trueValue
+	case "declined":
+		falseValue := false
+		approvalStatus = &falseValue
+	case "null":
+		approvalStatus = nil
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid status parameter"})
+		return
+	}
+
+	query := "SELECT EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS, APPROVAL_BY FROM leaves"
+	var rows *sql.Rows
+	var err error
+
+	if approvalStatus != nil {
+		query += " WHERE APPROVAL_STATUS = ?"
+		rows, err = r.db.Query(query, *approvalStatus)
+	} else {
+		query += " WHERE APPROVAL_STATUS IS NULL"
+		rows, err = r.db.Query(query)
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var leaves []Employee.Leave
+	for rows.Next() {
+		var leave Employee.Leave
+		var approvalStatus sql.NullBool
+		var approvedBy sql.NullInt64
+		err := rows.Scan(&leave.EmpId, &leave.StartDate, &leave.EndDate, &leave.LeaveType_id, &approvalStatus, &approvedBy)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		if approvalStatus.Valid {
+			leave.Approval_status = &approvalStatus.Bool
+		}
+		if approvedBy.Valid {
+			approvedByInt := int(approvedBy.Int64)
+			leave.ApprovedBy = &approvedByInt
+		}
+		leaves = append(leaves, leave)
+	}
+
+	c.JSON(http.StatusOK, leaves)
+}

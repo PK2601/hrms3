@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Select from '@radix-ui/react-select';
 import { Cross2Icon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
+import { screen, fireEvent } from '@testing-library/react';
 
-const EmployeeAdd = () => {
+const EmployeeAdd = ({refreshTable}) => {
   const [name, setName] = useState('');
   const [departmentId, setDepartmentId] = useState(1);
   const [managerId, setManagerId] = useState('');
@@ -134,6 +135,9 @@ const EmployeeAdd = () => {
         setAddress('');
         setDob('');
         setErrorMessage('');
+        const closeButton = screen.getByTestId('close');
+        fireEvent.click(closeButton);
+        refreshTable();
       } else {
         console.error('Error adding employee:', response.statusText);
       }

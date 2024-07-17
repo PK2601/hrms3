@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Input, Select, Button, Popconfirm } from 'antd';
-import { MinusCircleFilled } from '@ant-design/icons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Table, Input, Select, Popconfirm } from 'antd';
+//import { MinusCircleFilled } from '@ant-design/icons';
+import LeaveTypesAdd from '../Add-LeaveTypes';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -31,10 +32,6 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
   const [searchColumn, setSearchColumn] = useState('leave_type_name');
   const [data, setData] = useState(dataleavetypes);
 
-  useEffect(() => {
-    fetchLeaveTypes();
-  }, []);
-
   const fetchLeaveTypes = async () => {
     try {
       const response = await fetch('http://localhost:9036/leavetypes');
@@ -49,6 +46,14 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
     }
   };
 
+  const refreshTable = useCallback(async () => {
+    await fetchLeaveTypes();
+  }, []);
+
+  useEffect(() => {
+    refreshTable();
+  }, [refreshTable]);
+
   const handleSearch = (selectedColumn, value) => {
     setSearchColumn(selectedColumn);
     setSearchText(value);
@@ -62,6 +67,7 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
       if (response.ok) {
         setData(data.filter(item => item.key !== key));
         console.log('Leave Type deleted successfully');
+        refreshTable();
       } else {
         console.error('Error deleting leave type:', response.statusText);
       }
@@ -71,28 +77,6 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
   };
 
   const columns_leavetypes = [
-    {
-      title: '',
-      key: 'delete',
-      width: 30,
-      render: (record) => (
-        <Popconfirm
-          title="Are you sure to delete this row?"
-          onConfirm={() => handleDelete(record.leave_type_id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button
-            type="primary"
-            danger
-            shape="circle"
-            icon={<MinusCircleFilled />}
-            size="small"
-            data-testid='deletebutton'
-          />
-        </Popconfirm>
-      ),
-    },
     {
       title: <div data-testid='leavetypeid'>Id</div>,
       dataIndex: 'leave_type_id',
@@ -111,6 +95,36 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
       key: 'leave_type_name',
       sorter: (a, b) => a.leave_type_name.localeCompare(b.leave_type_name),
     },
+    {
+      title: '',
+      key: 'delete',
+      width: 250,
+      render: (record) => (
+        <div className="flex justify-center">
+        <Popconfirm
+          title="Are you sure to delete this row?"
+          onConfirm={() => handleDelete(record.leave_type_id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          {/* <Button
+            type="primary"
+            danger
+            shape="circle"
+            icon={<MinusCircleFilled />}
+            size="small"
+            data-testid='deletebutton'
+          /> */}
+          <button
+        className="text-red-600 shadow-red-400 hover:bg-red-200 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-red-600 focus:outline-none"
+        data-testid='deletebutton'
+      >
+        Delete
+      </button>
+        </Popconfirm>
+        </div>
+      ),
+    },
   ];
 
   const filteredData = data.filter(item =>
@@ -119,6 +133,9 @@ const TablesLeaveTypes = ({dataleavetypes = data_leavetypes}) => {
 
   return (
     <div>
+      <div style={{ marginBottom: 16, marginLeft: 5, marginTop:16 }}>
+        <LeaveTypesAdd refreshTable={refreshTable}/>
+      </div>
       <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
         <Select
           defaultValue="leave_type_name"

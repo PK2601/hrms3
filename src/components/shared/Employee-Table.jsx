@@ -1,7 +1,8 @@
-import React, { useState, useEffect  } from 'react';
-import { Table, Input, Select, Button, Popconfirm } from 'antd';
-import { MinusCircleFilled } from '@ant-design/icons';
+import React, { useState, useEffect, useCallback  } from 'react';
+import { Table, Input, Select, Popconfirm } from 'antd';
+//import { MinusCircleFilled } from '@ant-design/icons';
 import EmployeeModify from '../Modify-Employee';
+import EmployeeAdd from '../Add-Employee';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -69,9 +70,6 @@ const TablesEmp = ({dataemp = data_emp}) => {
   const [searchColumn, setSearchColumn] = useState('name');
   const [data, setData] = useState(dataemp);
 
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
 
   const fetchEmployees = async () => {
     try {
@@ -87,6 +85,14 @@ const TablesEmp = ({dataemp = data_emp}) => {
     }
   };
 
+  const refreshTable = useCallback(async () => {
+    await fetchEmployees();
+  }, []);
+
+  useEffect(() => {
+    refreshTable();
+  }, [refreshTable]);
+
   const handleSearch = (selectedColumn, value) => {
     setSearchColumn(selectedColumn);
     setSearchText(value);
@@ -100,6 +106,7 @@ const TablesEmp = ({dataemp = data_emp}) => {
       if (response.ok) {
         setData(data.filter(item => item.key !== key));
         console.log('Employee deleted successfully');
+        refreshTable();
       } else {
         console.error('Error deleting employee:', response.statusText);
       }
@@ -110,28 +117,6 @@ const TablesEmp = ({dataemp = data_emp}) => {
 
 
   const columns_emp = [
-    {
-      title: '',
-      key: 'delete',
-      width: 30,
-      render: (record) => (
-        <Popconfirm
-          title="Are you sure to delete this row?"
-          onConfirm={() => handleDelete(record.emp_id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button
-            type="primary"
-            danger
-            shape="circle"
-            icon={<MinusCircleFilled />}
-            size="small"
-            data-testid='deletebutton'
-          />
-        </Popconfirm>
-      ),
-    },
     {
       title: <div  data-testid='id'>Id</div>,
       dataIndex: 'emp_id',
@@ -182,9 +167,41 @@ const TablesEmp = ({dataemp = data_emp}) => {
     },
     {
       title: '',
+      key: 'delete',
+      width: 30,
+      render: (record) => (
+        <div className="flex justify-center">
+        <Popconfirm
+          title="Are you sure to delete this row?"
+          onConfirm={() => handleDelete(record.emp_id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          {/* <Button
+            type="primary"
+            danger
+            shape="circle"
+            icon={<MinusCircleFilled />}
+            size="small"
+            data-testid='deletebutton'
+          /> */}
+          <button
+        className="text-red-600 shadow-red-400 hover:bg-red-200 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-red-600 focus:outline-none"
+        data-testid='deletebutton'
+      >
+        Delete
+      </button>
+        </Popconfirm>
+        </div>
+      ),
+    },
+    {
+      title: '',
       key: 'modifyemployee',
       render: (record) => (
-        <EmployeeModify record={record} />
+        <div className="flex justify-center">
+        <EmployeeModify record={record} refreshTable={refreshTable} />
+        </div>
       ),
     },
   ];
@@ -195,6 +212,9 @@ const TablesEmp = ({dataemp = data_emp}) => {
 
   return (
     <div>
+      <div style={{ marginBottom: 16, marginLeft: 5, marginTop:16 }}>
+        <EmployeeAdd refreshTable={refreshTable}/>
+      </div>
       <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
         <Select
           defaultValue="name"
