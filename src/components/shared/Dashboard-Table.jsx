@@ -133,7 +133,6 @@ const TablesDashboard = ({datadash = data_dashboard}) => {
       const response = await fetch('http://localhost:9036/leaves');
       if (response.ok) {
         const leaves = await response.json();
-        console.log(leaves);
         setData(leaves);
       } else {
         console.error('Failed to fetch leaves:', response.statusText);

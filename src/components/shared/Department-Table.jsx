@@ -50,7 +50,6 @@ const TablesDept = ({datadept = data_dept}) => {
       const response = await fetch('http://localhost:9036/departments');
       if (response.ok) {
         const departments = await response.json();
-        console.log(departments);
         setData(departments);
       } else {
         console.error('Failed to fetch departments:', response.statusText);
