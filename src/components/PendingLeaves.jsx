@@ -84,28 +84,16 @@ const PendingLeaves = ({datapendingleaves = data_pendingleaves}) => {
     setSearchText(value);
   };
 
-  const handleDecline = async (record) => {
-    console.log("key",record);
-    const modifiedleaveData = {
-      emp_id: record.emp_id,
-      leave_type_id: record.leave_type_id,
-      start_date: record.start_date,
-      end_date: record.end_date,
-      approval_Status: false,
-      approved_by: 1
-    };
+  const handleDecline = async (key) => {
     try {
-      const response = await fetch("http://localhost:9036/leaves", {
+      const response = await fetch(`http://localhost:9036/leaves/${key}/reject`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(modifiedleaveData),
       });
-  
       if (response.ok) {
         console.log('Leave declined successfully');
-        //setData(data.filter(item => item.key !== key));
         refreshTable();
       } else {
         console.error('Error declining leave:', response.statusText);
@@ -114,8 +102,23 @@ const PendingLeaves = ({datapendingleaves = data_pendingleaves}) => {
       console.error('Network error:', error);
     }
   };
-  const handleApprove = (key) => {
-    setData(data.filter(item => item.key !== key));
+  const handleApprove = async (key) => {
+    try {
+      const response = await fetch(`http://localhost:9036/leaves/${key}/approve`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        console.log('Leave approved successfully');
+        refreshTable();
+      } else {
+        console.error('Error approving leave:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
   };
 
   const columns_pendingleaves = [
@@ -157,7 +160,7 @@ const PendingLeaves = ({datapendingleaves = data_pendingleaves}) => {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Popconfirm
               title="Are you sure to approve?"
-              onConfirm={() => handleApprove(record.key)}
+              onConfirm={() => handleApprove(record.leave_id)}
               okText="Yes"
               cancelText="No"
             >
@@ -181,7 +184,7 @@ const PendingLeaves = ({datapendingleaves = data_pendingleaves}) => {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Popconfirm
               title="Are you sure to decline?"
-              onConfirm={() => handleDecline(record)}
+              onConfirm={() => handleDecline(record.leave_id)}
               okText="Yes"
               cancelText="No"
             >

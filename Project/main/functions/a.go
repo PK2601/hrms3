@@ -1636,3 +1636,82 @@ func (r *Repo) GetLeaveByStatus(c *gin.Context) {
 
 	c.JSON(http.StatusOK, leaves)
 }
+
+func (r *Repo) ApproveLeaveByLeaveID(leaveID int64) error {
+	// Check if leaveID exists
+	var exists bool
+	err := r.db.QueryRow("SELECT EXISTS(SELECT 1 FROM leaves WHERE LEAVE_ID = ?)", leaveID).Scan(&exists)
+	if err != nil {
+		return fmt.Errorf("failed to check leave existence: %v", err)
+	}
+	if !exists {
+		return fmt.Errorf("leave with ID %d not found", leaveID)
+	}
+
+	// Update leave approval status and approval by
+	_, err = r.db.Exec("UPDATE leaves SET APPROVAL_STATUS = true, APPROVAL_BY = ? WHERE LEAVE_ID = ?", 1, leaveID)
+	if err != nil {
+		return fmt.Errorf("failed to approve leave: %v", err)
+	}
+
+	return nil
+}
+
+func (r *Repo) RejectLeaveByLeaveID(leaveID int64) error {
+	// Check if leaveID exists
+	var exists bool
+	err := r.db.QueryRow("SELECT EXISTS(SELECT 1 FROM leaves WHERE LEAVE_ID = ?)", leaveID).Scan(&exists)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf("Leave with ID %d not found", leaveID)
+	}
+
+	// Update leave approval status and clear approval by
+	_, err = r.db.Exec("UPDATE leaves SET APPROVAL_STATUS = false, APPROVAL_BY = NULL WHERE LEAVE_ID = ?", leaveID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *Repo) HandleApproveLeaveByLeaveID(c *gin.Context) {
+	leaveID, err := strconv.ParseInt(c.Param("leaveId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid leave ID"})
+		return
+	}
+
+	// Assuming you have authentication middleware that sets HR ID in the context
+	//hrID, exists := c.Get("hrID")
+	//if !exists {
+	//	c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+	//	return
+	//}
+
+	err = r.ApproveLeaveByLeaveID(leaveID) // Assuming hrID is an int
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Leave approved successfully"})
+}
+
+func (r *Repo) HandleRejectLeaveByLeaveID(c *gin.Context) {
+	leaveID, err := strconv.ParseInt(c.Param("leaveId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid leave ID"})
+		return
+	}
+
+	err = r.RejectLeaveByLeaveID(leaveID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Leave rejected successfully"})
+}

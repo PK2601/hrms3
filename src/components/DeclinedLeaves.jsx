@@ -82,8 +82,23 @@ const DeclinedLeaves = ({datadeclinedleaves = data_declinedleaves}) => {
     setSearchText(value);
   };
 
-  const handleApprove = (key) => {
-    setData(data.filter(item => item.key !== key));
+  const handleApprove = async (key) => {
+    try {
+      const response = await fetch(`http://localhost:9036/leaves/${key}/approve`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        console.log('Leave approved successfully');
+        refreshTable();
+      } else {
+        console.error('Error approving leave:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
   };
 
   const columns_declinedleaves = [
@@ -125,7 +140,7 @@ const DeclinedLeaves = ({datadeclinedleaves = data_declinedleaves}) => {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Popconfirm
               title="Are you sure to approve?"
-              onConfirm={() => handleApprove(record.key)}
+              onConfirm={() => handleApprove(record.leave_id)}
               okText="Yes"
               cancelText="No"
             >

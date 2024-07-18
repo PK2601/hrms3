@@ -82,8 +82,23 @@ const ApprovedLeaves = ({dataapprovedleaves = data_approvedleaves}) => {
     setSearchText(value);
   };
 
-  const handleDecline = (key) => {
-    setData(data.filter(item => item.key !== key));
+  const handleDecline = async (key) => {
+    try {
+      const response = await fetch(`http://localhost:9036/leaves/${key}/reject`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        console.log('Leave declined successfully');
+        refreshTable();
+      } else {
+        console.error('Error declining leave:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
   };
 
   const columns_approvedleaves = [
@@ -125,7 +140,7 @@ const ApprovedLeaves = ({dataapprovedleaves = data_approvedleaves}) => {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Popconfirm
               title="Are you sure to decline?"
-              onConfirm={() => handleDecline(record.key)}
+              onConfirm={() => handleDecline(record.leave_id)}
               okText="Yes"
               cancelText="No"
             >

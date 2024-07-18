@@ -76,5 +76,13 @@ func main() {
 	router.POST("/leaves", repo.CreateLeave)
 	router.GET("/leaves/status", repo.GetLeaveByStatus)
 
+	router.PUT("/leaves/:leaveId/approve", func(c *gin.Context) {
+		repo.HandleApproveLeaveByLeaveID(c)
+	})
+
+	router.PUT("/leaves/:leaveId/reject", func(c *gin.Context) {
+		repo.HandleRejectLeaveByLeaveID(c)
+	})
+
 	router.Run(":9036")
 }
