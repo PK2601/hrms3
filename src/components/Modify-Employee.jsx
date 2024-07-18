@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Select from '@radix-ui/react-select';
 import { Cross2Icon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
@@ -15,13 +15,34 @@ const EmployeeModify = ({record, refreshTable}) => {
   const [dob, setDob] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const departments = [
-    { id: 1, name: 'Human Resources' },
-    { id: 2, name: 'Information Technology' },
-    { id: 3, name: 'Finance' },
-    { id: 4, name: 'Sales' },
-    { id: 5, name: 'Marketing' },
-  ];
+  const [data, setData] = useState([]);
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch('http://localhost:9036/departments');
+      if (response.ok) {
+        const departments = await response.json();
+        setData(departments);
+      } else {
+        console.error('Failed to fetch departments:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  };
+
+  const refreshDeptTable = useCallback(async () => {
+    await fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    refreshDeptTable();
+  }, [refreshDeptTable]);
+
+  const departments = data.map(item => ({
+    id: item.dept_id,
+    name: item.Dept_Name
+  }));
 
   useEffect(() => {
     if (record) {
