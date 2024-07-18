@@ -43,12 +43,13 @@ func (e Employee) String() string {
 }
 
 type Leave struct {
+	LeaveId         int64  `json:"leave_id" db:"LEAVE_ID"`
 	EmpId           int    `json:"emp_id" db:"EMP_ID"`
 	StartDate       string `json:"start_date" db:"START_DATE"`
 	EndDate         string `json:"end_date" db:"END_DATE"`
 	LeaveType_id    int    `json:"leave_type_id" db:"LEAVE_TYPE_ID"`
-	Approval_status *bool  `json:"approval_Status" db:"APPROVAL_STATUS"`
-	ApprovedBy      *int   `json:"approved_by,omitempty" db:"APPROVAL_BY"`
+	Approval_status *bool  `json:"approval_status" db:"APPROVAL_STATUS"`
+	ApprovedBy      *int   `json:"approved_by" db:"APPROVAL_BY"`
 }
 
 type Department struct {

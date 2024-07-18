@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
 
 const columns_dashboard = [
-  // {
-  //   title: <div data-testid='id'>Id</div>,
-  //   dataIndex: 'id',
-  //   key: 'id',
-  //   sorter: (a, b) => a.id - b.id,
-  // },
+  {
+    title: <div data-testid='id'>Id</div>,
+    dataIndex: 'LeaveId',
+    key: 'LeaveId',
+    sorter: (a, b) => a.LeaveId - b.LeaveId,
+  },
   {
       title: <div data-testid='employeeid'>Employee Id</div>,
       dataIndex: 'EmpId',
@@ -76,7 +76,7 @@ const columns_dashboard = [
 const data_dashboard = [
   {
     key: '1',
-    id: 1,
+    LeaveId: 1,
     EmpId: 1,
     LeaveType_id: 101,
     StartDate: '2024-07-01',
@@ -85,7 +85,7 @@ const data_dashboard = [
   },
   {
     key: '2',
-    id: 2,
+    LeaveId: 2,
     EmpId: 2,
     LeaveType_id: 102,
     StartDate: '2024-07-10',
@@ -94,7 +94,7 @@ const data_dashboard = [
   },
   {
     key: '3',
-    id: 3,
+    LeaveId: 3,
     EmpId: 3,
     LeaveType_id: 103,
     StartDate: '2024-08-01',
@@ -103,7 +103,7 @@ const data_dashboard = [
   },
   {
     key: '4',
-    id: 4,
+    LeaveId: 4,
     EmpId: 4,
     LeaveType_id: 104,
     StartDate: '2024-09-01',
@@ -112,7 +112,7 @@ const data_dashboard = [
   },
   {
     key: '5',
-    id: 5,
+    LeaveId: 5,
     EmpId: 5,
     LeaveType_id: 105,
     StartDate: '2024-10-01',

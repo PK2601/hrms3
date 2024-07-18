@@ -698,6 +698,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type Repo struct {
@@ -1286,7 +1287,7 @@ func (r *Repo) DeleteLeaveType(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Leave type deleted"})
 }
 func (r *Repo) GetLeaves(c *gin.Context) {
-	rows, err := r.db.Query("SELECT EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS, APPROVAL_BY FROM leaves")
+	rows, err := r.db.Query("SELECT LEAVE_ID, EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS, APPROVAL_BY FROM leaves")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -1295,23 +1296,26 @@ func (r *Repo) GetLeaves(c *gin.Context) {
 
 	var leaves []gin.H
 	for rows.Next() {
-		var leave gin.H = make(gin.H)
+		var leaveId int64
 		var empId int
 		var startDate, endDate string
 		var leaveTypeId int
 		var approvalStatus sql.NullBool
 		var approvedBy sql.NullInt64
 
-		err := rows.Scan(&empId, &startDate, &endDate, &leaveTypeId, &approvalStatus, &approvedBy)
+		err := rows.Scan(&leaveId, &empId, &startDate, &endDate, &leaveTypeId, &approvalStatus, &approvedBy)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		leave["EmpId"] = empId
-		leave["StartDate"] = startDate
-		leave["EndDate"] = endDate
-		leave["LeaveType_id"] = leaveTypeId
+		leave := gin.H{
+			"LeaveId":      leaveId,
+			"EmpId":        empId,
+			"StartDate":    startDate,
+			"EndDate":      endDate,
+			"LeaveType_id": leaveTypeId,
+		}
 
 		if approvalStatus.Valid {
 			leave["Approval_status"] = approvalStatus.Bool
@@ -1376,12 +1380,22 @@ func (r *Repo) GetLeaveByEmpID(c *gin.Context) {
 func (r *Repo) CreateLeave(c *gin.Context) {
 	var newLeave Employee.Leave
 	if err := c.ShouldBindJSON(&newLeave); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
 		return
 	}
 
-	result, err := r.db.Exec("INSERT INTO leaves (EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS) VALUES (?, ?, ?, ?, ?)",
-		newLeave.EmpId, newLeave.StartDate, newLeave.EndDate, newLeave.LeaveType_id, newLeave.Approval_status)
+	// Additional validation for required fields
+	if newLeave.EmpId == 0 || newLeave.StartDate == "" || newLeave.EndDate == "" || newLeave.LeaveType_id == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: missing required fields"})
+		return
+	}
+
+	// Generate a random LEAVE_ID (assuming you want it to be unique)
+	rand.Seed(time.Now().UnixNano())
+	newLeave.LeaveId = rand.Int63n(1000000) // Generates a random number between 0 and 999999
+
+	result, err := r.db.Exec("INSERT INTO leaves (LEAVE_ID, EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS, APPROVAL_BY) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		newLeave.LeaveId, newLeave.EmpId, newLeave.StartDate, newLeave.EndDate, newLeave.LeaveType_id, newLeave.Approval_status, newLeave.ApprovedBy)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -1582,7 +1596,7 @@ func (r *Repo) GetLeaveByStatus(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS, APPROVAL_BY FROM leaves"
+	query := "SELECT LEAVE_ID, EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS, APPROVAL_BY FROM leaves"
 	var rows *sql.Rows
 	var err error
 
@@ -1605,7 +1619,7 @@ func (r *Repo) GetLeaveByStatus(c *gin.Context) {
 		var leave Employee.Leave
 		var approvalStatus sql.NullBool
 		var approvedBy sql.NullInt64
-		err := rows.Scan(&leave.EmpId, &leave.StartDate, &leave.EndDate, &leave.LeaveType_id, &approvalStatus, &approvedBy)
+		err := rows.Scan(&leave.LeaveId, &leave.EmpId, &leave.StartDate, &leave.EndDate, &leave.LeaveType_id, &approvalStatus, &approvedBy)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

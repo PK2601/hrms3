@@ -8,7 +8,7 @@ const { Option } = Select;
 const data_pendingleaves = [
     {
       key: '1',
-      id: 1,
+      leave_id: 1,
       emp_id: 1,
       leave_type_id: 101,
       start_date: '2024-07-01',
@@ -16,7 +16,7 @@ const data_pendingleaves = [
     },
     {
       key: '2',
-      id: 2,
+      leave_id: 2,
       emp_id: 2,
       leave_type_id: 102,
       start_date: '2024-07-10',
@@ -24,7 +24,7 @@ const data_pendingleaves = [
     },
     {
       key: '3',
-      id: 3,
+      leave_id: 3,
       emp_id: 3,
       leave_type_id: 103,
       start_date: '2024-08-01',
@@ -32,7 +32,7 @@ const data_pendingleaves = [
     },
     {
       key: '4',
-      id: 4,
+      leave_id: 4,
       emp_id: 4,
       leave_type_id: 104,
       start_date: '2024-09-01',
@@ -40,7 +40,7 @@ const data_pendingleaves = [
     },
     {
       key: '5',
-      id: 5,
+      leave_id: 5,
       emp_id: 5,
       leave_type_id: 105,
       start_date: '2024-10-01',
@@ -119,12 +119,12 @@ const PendingLeaves = ({datapendingleaves = data_pendingleaves}) => {
   };
 
   const columns_pendingleaves = [
-    // {
-    //   title: <div data-testid='id'>Id</div>,
-    //   dataIndex: 'id',
-    //   key: 'id',
-    //   sorter: (a, b) => a.id - b.id,
-    // },
+    {
+      title: <div data-testid='id'>Id</div>,
+      dataIndex: 'leave_id',
+      key: 'leave_id',
+      sorter: (a, b) => a.leave_id - b.leave_id,
+    },
     {
         title: <div data-testid='employeeid'>Employee Id</div>,
         dataIndex: 'emp_id',
@@ -211,6 +211,7 @@ const PendingLeaves = ({datapendingleaves = data_pendingleaves}) => {
           style={{ width: 150, marginRight: 8 }}
           onChange={value => setSearchColumn(value)}
         >
+          <Option value="leave_id">Id</Option>
           <Option value="emp_id">Employee Id</Option>
           <Option value="leave_type_id">Leave Type Id</Option>
           <Option value="start_date">Start Date</Option>
