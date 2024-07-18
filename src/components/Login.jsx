@@ -5,7 +5,7 @@ import { Navigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
-const LogIn = () => {
+const LogIn = ({ setAdminLoggedIn }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
@@ -13,6 +13,7 @@ const LogIn = () => {
   const imageUrl = 'https://wallpaper.forfun.com/fetch/8f/8f0b1487338dc0820748ada8adba3df7.jpeg?h=1200&r=0.5'
   const handleLogin = () => {
     if (username === 'admin' && password === 'password') {
+      setAdminLoggedIn(true);
       setLoggedIn(true);
     } else {
       alert('Wrong username or password');
