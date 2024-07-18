@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Input, Select, Button, Popconfirm } from 'antd';
 import { CheckCircleFilled, MinusCircleFilled } from '@ant-design/icons';
 
@@ -50,34 +50,22 @@ const data_pendingleaves = [
   
 
 
-const PendingLeaves = ({datapendingleaves = data_pendingleaves}) => {
+const PendingLeaves = ({datapendingleaves = data_pendingleaves, refreshTable}) => {
   const [searchText, setSearchText] = useState('');
   const [searchColumn, setSearchColumn] = useState('emp_id');
   const [data, setData] = useState(datapendingleaves);
 
-  const fetchPendingLeaves = async () => {
-    try {
-      const response = await fetch('http://localhost:9036/leaves/status?status=null');
-      if (response.ok) {
-        const pendingleaves = await response.json();
-        setData(pendingleaves);
-      } else {
-        console.error('Failed to fetch pending leaves:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching pending leaves:', error);
-    }
-  };
+  
 
-  const refreshTable = useCallback(async () => {
-    await fetchPendingLeaves();
-  }, []);
+  useEffect(() => {
+    setData(datapendingleaves);
+  }, [datapendingleaves]);
 
   useEffect(() => {
     refreshTable();
   }, [refreshTable]);
 
-  console.log(data);
+  //console.log(data);
 
   const handleSearch = (selectedColumn, value) => {
     setSearchColumn(selectedColumn);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Input, Select, Button, Popconfirm } from 'antd';
 import { CheckCircleFilled } from '@ant-design/icons';
 
@@ -50,28 +50,14 @@ const data_declinedleaves = [
   
 
 
-const DeclinedLeaves = ({datadeclinedleaves = data_declinedleaves}) => {
+const DeclinedLeaves = ({datadeclinedleaves = data_declinedleaves, refreshTable}) => {
   const [searchText, setSearchText] = useState('');
   const [searchColumn, setSearchColumn] = useState('emp_id');
   const [data, setData] = useState(datadeclinedleaves);
 
-  const fetchDeclinedLeaves = async () => {
-    try {
-      const response = await fetch('http://localhost:9036/leaves/status?status=declined');
-      if (response.ok) {
-        const declinedleaves = await response.json();
-        setData(declinedleaves);
-      } else {
-        console.error('Failed to declined leaves:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching declined leaves:', error);
-    }
-  };
-
-  const refreshTable = useCallback(async () => {
-    await fetchDeclinedLeaves();
-  }, []);
+  useEffect(() => {
+    setData(datadeclinedleaves);
+  }, [datadeclinedleaves]);
 
   useEffect(() => {
     refreshTable();

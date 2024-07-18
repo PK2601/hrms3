@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Input, Select, Button, Popconfirm } from 'antd';
 import { MinusCircleFilled } from '@ant-design/icons';
 
@@ -50,28 +50,15 @@ const data_approvedleaves = [
   
 
 
-const ApprovedLeaves = ({dataapprovedleaves = data_approvedleaves}) => {
+const ApprovedLeaves = ({dataapprovedleaves = data_approvedleaves, refreshTable}) => {
   const [searchText, setSearchText] = useState('');
   const [searchColumn, setSearchColumn] = useState('emp_id');
   const [data, setData] = useState(dataapprovedleaves);
 
-  const fetchApprovedLeaves = async () => {
-    try {
-      const response = await fetch('http://localhost:9036/leaves/status?status=approved');
-      if (response.ok) {
-        const approvedleaves = await response.json();
-        setData(approvedleaves);
-      } else {
-        console.error('Failed to fetch approved leaves:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching approved leaves:', error);
-    }
-  };
 
-  const refreshTable = useCallback(async () => {
-    await fetchApprovedLeaves();
-  }, []);
+  useEffect(() => {
+    setData(dataapprovedleaves);
+  }, [dataapprovedleaves]);
 
   useEffect(() => {
     refreshTable();

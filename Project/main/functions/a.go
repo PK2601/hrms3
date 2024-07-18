@@ -1634,6 +1634,11 @@ func (r *Repo) GetLeaveByStatus(c *gin.Context) {
 		leaves = append(leaves, leave)
 	}
 
+	if len(leaves) == 0 {
+		c.JSON(http.StatusOK, []Employee.Leave{})
+		return
+	}
+
 	c.JSON(http.StatusOK, leaves)
 }
 
