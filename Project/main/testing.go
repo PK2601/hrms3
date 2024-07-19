@@ -84,5 +84,12 @@ func main() {
 		repo.HandleRejectLeaveByLeaveID(c)
 	})
 
+	router.GET("/leavetypes/count", repo.CountLeaveTypes)
+	router.GET("/employees/count", repo.CountEmployees)
+	router.GET("/departments/count", repo.CountDepartments)
+	router.GET("/leaves/approved/count", repo.CountApprovedLeaves) // Add count approved leaves route
+	router.GET("/leaves/declined/count", repo.CountDeclinedLeaves) // Add count declined leaves route
+	router.GET("/leaves/pending/count", repo.CountPendingLeaveApplications)
+
 	router.Run(":9036")
 }

@@ -1342,7 +1342,7 @@ func (r *Repo) GetLeaveByEmpID(c *gin.Context) {
 		return
 	}
 
-	rows, err := r.db.Query("SELECT EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS, APPROVAL_BY FROM leaves WHERE EMP_ID = ?", empID)
+	rows, err := r.db.Query("SELECT LEAVE_ID, EMP_ID, START_DATE, END_DATE, LEAVE_TYPE_ID, APPROVAL_STATUS, APPROVAL_BY FROM leaves WHERE EMP_ID = ?", empID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -1354,7 +1354,7 @@ func (r *Repo) GetLeaveByEmpID(c *gin.Context) {
 		var leave Employee.Leave
 		var approvalStatus sql.NullBool
 		var approvedBy sql.NullInt64
-		err := rows.Scan(&leave.EmpId, &leave.StartDate, &leave.EndDate, &leave.LeaveType_id, &approvalStatus, &approvedBy)
+		err := rows.Scan(&leave.LeaveId, &leave.EmpId, &leave.StartDate, &leave.EndDate, &leave.LeaveType_id, &approvalStatus, &approvedBy)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -1719,4 +1719,74 @@ func (r *Repo) HandleRejectLeaveByLeaveID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Leave rejected successfully"})
+}
+
+func (r *Repo) CountLeaveTypes(c *gin.Context) {
+	var count int
+
+	err := r.db.QueryRow("SELECT COUNT(*) FROM leave_type").Scan(&count)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": count})
+}
+func (r *Repo) CountEmployees(c *gin.Context) {
+	var count int
+
+	err := r.db.QueryRow("SELECT COUNT(*) FROM employee").Scan(&count)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": count})
+}
+func (r *Repo) CountDepartments(c *gin.Context) {
+	var count int
+
+	err := r.db.QueryRow("SELECT COUNT(*) FROM department").Scan(&count)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": count})
+}
+func (r *Repo) CountApprovedLeaves(c *gin.Context) {
+	var count int
+
+	query := "SELECT COUNT(*) FROM leaves WHERE APPROVAL_STATUS = true"
+	err := r.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": count})
+}
+func (r *Repo) CountDeclinedLeaves(c *gin.Context) {
+	var count int
+
+	query := "SELECT COUNT(*) FROM leaves WHERE APPROVAL_STATUS = false"
+	err := r.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": count})
+}
+func (r *Repo) CountPendingLeaveApplications(c *gin.Context) {
+	var count int
+
+	query := "SELECT COUNT(*) FROM leaves WHERE APPROVAL_STATUS IS NULL"
+	err := r.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": count})
 }
